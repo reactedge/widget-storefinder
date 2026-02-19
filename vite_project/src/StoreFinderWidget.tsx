@@ -5,8 +5,6 @@ type Props = {
     host: HTMLElement
 }
 
-export const WIDGET_ID = 'StoreFinder';
-
 export default function StoreFinderWidget({host}: Props) {
     const config = useWidgetConfig(host);
 

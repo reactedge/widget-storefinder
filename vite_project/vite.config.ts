@@ -9,6 +9,7 @@ export default defineConfig({
   },
   build: {
     outDir: "../www",
+    cssCodeSplit: true,
     emptyOutDir: false,
     lib: {
       entry: "src/widget.ts",
@@ -21,6 +22,8 @@ export default defineConfig({
         inlineDynamicImports: true,
         assetFileNames: "widget-store-finder.[ext]",
       },
-    }
+    },
+    minify: true,
+    sourcemap: false
   }
 });
