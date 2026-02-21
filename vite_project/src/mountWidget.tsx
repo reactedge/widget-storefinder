@@ -7,7 +7,6 @@ export const WIDGET_ID = 'storefinder';
 
 export function mountWidget(hostElement: HTMLElement) {
     const mountedHost = getMountedHost(hostElement);
-    hostElement.classList.add(`reactedge-${WIDGET_ID}`);
 
     activity('bootstrap', 'Widget mounted', hostElement);
 

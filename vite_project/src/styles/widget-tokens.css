@@ -1,6 +1,7 @@
 /* widget-tokens.css */
 
 /* New shared tokens (canonical) */
+:host,
 :root {
     --widget-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 

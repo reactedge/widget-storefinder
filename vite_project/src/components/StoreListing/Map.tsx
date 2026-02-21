@@ -1,17 +1,18 @@
 import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 import { useState } from "react";
-import type {Store} from "../../domain/store.types.ts";
-import type {Center, ResolvedStoreFinderConfig} from "../Types.ts";
+import type {LatLng, ResolvedStoreFinderConfig, Store} from "../../domain/store.types.ts";
 
 interface StoreMapProps {
     readonly stores: readonly Store[];
-    readonly currentCenter: Center;
+    readonly currentCenter: LatLng;
     readonly config: ResolvedStoreFinderConfig
 }
 
 export function StoreMap({ stores, currentCenter, config }: StoreMapProps) {
     const [selected, setSelected] = useState<Store | null>(null);
-    const apiKey = config.integrations.googleMaps.apiKey
+    const apiKey = config.integrations.googleMaps?.apiKey
+
+    if (apiKey === undefined) return null;
 
     return (
         <LoadScript googleMapsApiKey={apiKey}>

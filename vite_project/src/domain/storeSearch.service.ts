@@ -36,7 +36,10 @@ export class StoreSearchService {
                 )
             }))
             .filter((store: StoreWithDistance) => store.distanceKm !== null && store.distanceKm <= maxDistanceKm)
-            .sort((a: StoreWithDistance, b: StoreWithDistance) => a.distanceKm - b.distanceKm);
+            .sort((a: StoreWithDistance, b: StoreWithDistance) => {
+                if (a.distanceKm === null || b.distanceKm === null) return 0;
+                return a.distanceKm - b.distanceKm
+            });
 
         return {
             stores,

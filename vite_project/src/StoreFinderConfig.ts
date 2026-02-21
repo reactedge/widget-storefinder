@@ -1,9 +1,8 @@
-import {WIDGET_ID} from "./StoreFinderWidget.tsx";
-
 import type {
     ReactEdgeRuntimeConfig,
     ResolvedStoreFinderConfig, StoreFinderWidgetConfig
 } from "./domain/store.types.ts";
+import {WIDGET_ID} from "./mountWidget.tsx";
 
 export function readWidgetConfig(
     hostElement: HTMLElement

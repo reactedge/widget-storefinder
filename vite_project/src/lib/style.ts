@@ -7,3 +7,9 @@ export function ensureGlobalStyle(id: string, href: string) {
         document.head.appendChild(link);
     }
 }
+
+export function injectStyles(shadow: ShadowRoot, cssText: string) {
+    const style = document.createElement("style");
+    style.textContent = cssText;
+    shadow.appendChild(style);
+}
