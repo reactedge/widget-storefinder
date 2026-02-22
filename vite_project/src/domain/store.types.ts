@@ -9,7 +9,7 @@ export interface Store {
     readonly hours?: string;
 }
 
-export type StoreWithDistance = Store & { distanceKm: number | null };
+export type StoreWithDistance = Store & { distance: number | null };
 
 
 export interface StoreFinderWidgetConfig {
@@ -17,12 +17,14 @@ export interface StoreFinderWidgetConfig {
     readonly integration?: {
         readonly requires?: readonly GoogleMapsIntegrationName[];
     };
+    readonly translations?: StoreFinderTranslationsConfig
 }
 
 export interface StoreFinderDataConfig {
     readonly stores: readonly Store[];
     readonly defaultCenter: LatLng;
     readonly zoom: number;
+    readonly country: string
 }
 
 export type LatLng = {
@@ -46,6 +48,9 @@ export interface ReactEdgeRuntimeIntegrations {
     };
 }
 
+export type StoreFinderTranslationsConfig = Record<string, string> | undefined;
+
+
 /* -------------------- */
 /* Resolved Config      */
 /* -------------------- */
@@ -53,13 +58,15 @@ export interface ReactEdgeRuntimeIntegrations {
 export interface ResolvedStoreFinderConfig {
     readonly data: StoreFinderDataConfig;
     readonly integrations: ReactEdgeRuntimeIntegrations;
+    readonly translations: StoreFinderTranslationsConfig
 }
 
-export type DistanceOption = { label: string; miles: number; };
+export type DistanceUnit = 'km' | 'mi';
 
-export const DISTANCE_OPTIONS: DistanceOption[] = [
-    { label: "10 miles", miles: 10 },
-    { label: "30 miles", miles: 30 },
-    { label: "100 miles", miles: 100 },
-    { label: "300 miles", miles: 300 }
-];
+export interface DistanceOption {
+    label: string;
+    value: number;
+}
+
+export const BASE_RADIUS_KM = [10, 50, 200, 500];
+export const BASE_RADIUS_MI = [10, 30, 100, 300];

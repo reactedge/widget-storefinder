@@ -1,11 +1,12 @@
-import type {Store} from "../domain/store.types.ts";
-
 export class MapSearch {
-    async geocodePostcode(postcode: string): Promise<{ lat: number; lng: number } | null> {
+    async geocodePostcode(
+        postcode: string,
+        countryCode: string
+    ): Promise<{ lat: number; lng: number } | null> {
         const geocoder = new google.maps.Geocoder();
 
         return new Promise(resolve => {
-            geocoder.geocode({ address: postcode }, (results, status) => {
+            geocoder.geocode({ address: postcode, componentRestrictions: { country: countryCode } }, (results, status) => {
                 if (status === google.maps.GeocoderStatus.OK && results && results.length > 0) {
                     const loc = results[0].geometry.location;
                     resolve({ lat: loc.lat(), lng: loc.lng() });
@@ -28,23 +29,5 @@ export class MapSearch {
             Math.sin(dLon / 2) ** 2;
 
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    }
-
-    filterStores(
-        origin: { lat: number; lng: number },
-        stores: Store[],
-        radiusMiles: number
-    ): Store[] {
-        const radiusKm = radiusMiles * 1.60934;
-
-        return stores.filter(store => {
-            const dist = this.calculateDistanceKm(
-                origin.lat,
-                origin.lng,
-                store.lat,
-                store.lng
-            );
-            return dist <= radiusKm;
-        });
     }
 }

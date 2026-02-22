@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { DISTANCE_OPTIONS } from "../../domain/store.types";
+import {BASE_RADIUS_KM, type ResolvedStoreFinderConfig} from "../../domain/store.types";
+import {getDistanceOptions} from "../../domain/storeSearch.service.ts";
+import {useTranslationState} from "../../state/Translation/useTranslationState.ts";
 
 interface SearchFormProps {
     readonly onSearch: (postcode: string, distanceMiles: number) => void;
+    readonly config: ResolvedStoreFinderConfig
 }
 
-export function StoreSearchForm({ onSearch }: SearchFormProps) {
+export function StoreSearchForm({ onSearch, config }: SearchFormProps) {
     const [postcode, setPostcode] = useState("");
-    const [distance, setDistance] = useState(DISTANCE_OPTIONS[0].miles);
+    const [distance, setDistance] = useState(BASE_RADIUS_KM[0]);
+    const {t} = useTranslationState();
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -19,7 +23,7 @@ export function StoreSearchForm({ onSearch }: SearchFormProps) {
         <form className="storeSearchForm" onSubmit={handleSubmit}>
             <input
                 type="text"
-                placeholder="Enter postcode"
+                placeholder={t("Enter postcode")}
                 value={postcode}
                 onChange={(e) => setPostcode(e.target.value)}
                 required
@@ -31,15 +35,15 @@ export function StoreSearchForm({ onSearch }: SearchFormProps) {
                 onChange={(e) => setDistance(Number(e.target.value))}
                 className="storeSearchForm__select"
             >
-                {DISTANCE_OPTIONS.map(option => (
-                    <option key={option.miles} value={option.miles}>
+                {getDistanceOptions(config.data.country).map(option => (
+                    <option key={option.value} value={option.value}>
                         {option.label}
                     </option>
                 ))}
             </select>
 
             <button type="submit" className="storeSearchForm__button">
-                Search
+                {t("Search")}
             </button>
         </form>
     );
