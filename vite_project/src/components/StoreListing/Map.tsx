@@ -1,6 +1,7 @@
 import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 import { useState } from "react";
 import type {LatLng, ResolvedStoreFinderConfig, Store} from "../../domain/store.types.ts";
+import {useTranslationState} from "../../state/Translation/useTranslationState.ts";
 
 interface StoreMapProps {
     readonly stores: readonly Store[];
@@ -11,6 +12,7 @@ interface StoreMapProps {
 export function StoreMap({ stores, currentCenter, config }: StoreMapProps) {
     const [selected, setSelected] = useState<Store | null>(null);
     const apiKey = config.integrations.googleMaps?.apiKey
+    const {t} = useTranslationState()
 
     if (apiKey === undefined) return null;
 
@@ -18,7 +20,9 @@ export function StoreMap({ stores, currentCenter, config }: StoreMapProps) {
         <LoadScript googleMapsApiKey={apiKey}>
             <div className="storeMap">
                 <div className="storeMap__title">
-                    {stores.length} store{stores.length !== 1 ? "s" : ""} found
+                    {stores.length <= 1
+                        ? t('%1 store found', stores.length)
+                        : t('%1 stores found', stores.length)}
                 </div>
 
                 <GoogleMap

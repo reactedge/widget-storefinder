@@ -5,6 +5,7 @@ import {MapSearch} from "../Model/MapSearch.ts";
 import {StoreResultsCards} from "./StoreListing/StoreResultsCards.tsx";
 import {StoreSearchService} from "../domain/storeSearch.service.ts";
 import type {ResolvedStoreFinderConfig, StoreWithDistance} from "../domain/store.types.ts";
+import {useTranslationState} from "../state/Translation/useTranslationState.ts";
 
 type Props = {
     config: ResolvedStoreFinderConfig
@@ -19,12 +20,13 @@ export function StoreFinder({config}: Props) {
         () => new StoreSearchService(config.data, mapSearch),
         [mapSearch]
     );
+    const {t} = useTranslationState()
 
-    const handleSearch = async (postcode: string, distanceMiles: number) => {
-        const result = await storeSearchService.search(postcode, distanceMiles);
+    const handleSearch = async (postcode: string, radius: number) => {
+        const result = await storeSearchService.search(postcode, radius, config.data.country);
 
         if (!result) {
-            setError("Postcode not found");
+            setError(t("Postcode not found"));
             return;
         }
 
@@ -36,9 +38,9 @@ export function StoreFinder({config}: Props) {
 
     return (
         <>
-            <StoreSearchForm onSearch={handleSearch} />
+            <StoreSearchForm onSearch={handleSearch} config={config} />
             <StoreMap stores={listedStores} currentCenter={currentCenter} config={config} />
-            <StoreResultsCards stores={listedStores as StoreWithDistance[]} />
+            <StoreResultsCards stores={listedStores as StoreWithDistance[]} config={config} />
         </>
     );
 };

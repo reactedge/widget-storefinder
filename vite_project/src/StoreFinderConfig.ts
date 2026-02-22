@@ -3,25 +3,25 @@ import type {
     ResolvedStoreFinderConfig, StoreFinderWidgetConfig
 } from "./domain/store.types.ts";
 import {WIDGET_ID} from "./mountWidget.tsx";
+import {loadContract} from "./widget-runtime/lib/contractLoader.ts";
+import {activity} from "./activity";
 
-export function readWidgetConfig(
+export async function readWidgetConfig(
     hostElement: HTMLElement
-): ResolvedStoreFinderConfig | null {
-    const configScript = hostElement.querySelector<HTMLScriptElement>(
-        'script[type="application/json"][data-config]'
-    );
+): Promise<ResolvedStoreFinderConfig> {
 
-    if (!configScript) {
-        throw new Error(`${WIDGET_ID} widget requires a <script data-config> block.`);
-    }
+    const contract = await loadContract(hostElement);
 
-    try {
-        const parsed = JSON.parse(configScript.textContent || "{}");
+    const runtime = readIntegrationConfig();
+    const resolved = resolveStoreFinderConfig(contract, runtime);
 
-        return Object.freeze(parsed);
-    } catch {
-        return null;
-    }
+    activity('bootstrap', 'Config resolved', {
+        data: resolved.data,
+        integrations: resolved.integrations,
+        translations: resolved.translations
+    });
+
+    return Object.freeze(resolved);
 }
 
 export function readIntegrationConfig(): ReactEdgeRuntimeConfig {
@@ -61,6 +61,7 @@ export function resolveStoreFinderConfig(
         data: widget.data,
         integrations: {
             googleMaps: runtime.integrations?.googleMaps
-        }
+        },
+        translations: widget.translations
     };
 }

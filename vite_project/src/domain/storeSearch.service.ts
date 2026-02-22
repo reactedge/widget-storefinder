@@ -1,5 +1,15 @@
-import type {LatLng, Store, StoreFinderDataConfig, StoreWithDistance} from "./store.types";
+import {
+    BASE_RADIUS_KM, BASE_RADIUS_MI,
+    type DistanceOption,
+    type LatLng,
+    type Store,
+    type StoreFinderDataConfig,
+    type StoreWithDistance
+} from "./store.types";
 import { MapSearch } from "../Model/MapSearch";
+
+const KM_TO_MI = 0.621371;
+const MI_TO_KM = 1 / KM_TO_MI; // avoids rounding mismatch
 
 export interface StoreSearchResult {
     readonly stores: readonly StoreWithDistance[];
@@ -17,33 +27,52 @@ export class StoreSearchService {
 
     async search(
         postcode: string,
-        distanceMiles: number
+        radius: number,
+        countryCode: string
     ): Promise<StoreSearchResult | null> {
 
-        const userLocation = await this.mapSearch.geocodePostcode(postcode);
+        const userLocation = await this.mapSearch.geocodePostcode(postcode, countryCode);
         if (!userLocation) return null;
 
-        const maxDistanceKm = distanceMiles * 1.60934;
+        const unit = countryCode.toLowerCase() === 'gb' ? 'mi' : 'km';
+
+        const maxDistanceKm =
+            unit === 'mi'
+                ? radius * MI_TO_KM
+                : radius;
 
         const stores: StoreWithDistance[] = this.dataset.stores
             .map((store: Store) => ({
                 ...store,
-                distanceKm: this.mapSearch.calculateDistanceKm(
+                distance: this.mapSearch.calculateDistanceKm(
                     userLocation.lat,
                     userLocation.lng,
                     store.lat,
                     store.lng
                 )
             }))
-            .filter((store: StoreWithDistance) => store.distanceKm !== null && store.distanceKm <= maxDistanceKm)
-            .sort((a: StoreWithDistance, b: StoreWithDistance) => {
-                if (a.distanceKm === null || b.distanceKm === null) return 0;
-                return a.distanceKm - b.distanceKm
-            });
+            .filter(store => store.distance <= maxDistanceKm)
+            .sort((a, b) => a.distance - b.distance);
 
         return {
             stores,
             center: userLocation
         };
     }
+}
+
+export function getDistanceOptions(countryCode: string): DistanceOption[] {
+    const isGb = countryCode.toLowerCase() === 'gb';
+    const unit = isGb ? 'mi' : 'km';
+    const options = isGb ? BASE_RADIUS_MI : BASE_RADIUS_KM;
+
+    return options.map((distance) => ({
+        value: distance,
+        label: `${distance} ${unit}`
+    }));
+}
+
+export function getUnitLabel(countryCode: string) {
+    const isGb = countryCode.toLowerCase() === 'gb';
+    return isGb ? 'miles' : 'km';
 }
