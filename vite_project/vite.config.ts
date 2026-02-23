@@ -14,13 +14,13 @@ export default defineConfig({
     lib: {
       entry: "src/widget.ts",
       name: "WidgetStoreFinder",
-      fileName: () => `widget-store-finder@${pkg.version}.iife.js`,
+      fileName: () => `widget-storefinder@${pkg.version}.iife.js`,
       formats: ["iife"],
     },
     rollupOptions: {
       output: {
         inlineDynamicImports: true,
-        assetFileNames: "widget-store-finder.[ext]",
+        assetFileNames: "widget-storefinder.[ext]",
       },
     },
     minify: true,

@@ -37,7 +37,7 @@ export function StoreResultsTable({ stores }: StoreResultsTableProps) {
                         <td className="storeTable__td">{store.name}</td>
                         <td className="storeTable__td">{store.hours}</td>
                         <td className="storeTable__td">
-                            {store.distanceKm?.toFixed(1)} km
+                            {store.distance?.toFixed(1)} km
                         </td>
                     </tr>
                 ))}
