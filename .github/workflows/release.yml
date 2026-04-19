@@ -46,6 +46,11 @@ jobs:
 
           ssh-keyscan -H "${{ secrets.WIDGET_SSH_HOST }}" >> ~/.ssh/known_hosts
 
+      - name: Prepare widget
+        id: prepare_artifact
+        run: |
+          ./scripts/build-widget.sh usp
+
       - name: Publish artifact
         run: |
           VERSION=$(node -p "require('./vite_project/package.json').version")
