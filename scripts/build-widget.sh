@@ -11,10 +11,12 @@ fi
 
 VERSION=$(node -p "require('./vite_project/package.json').version")
 
-FILE="${BASE_DIR}/widget-${WIDGET_NAME}@${VERSION}.iife.js"
+FILE=$(ls www/widget-${WIDGET_NAME}@*.iife.js 2>/dev/null)
+COUNT=$(echo "$FILE" | wc -l)
 
-if [ ! -f "$FILE" ]; then
-  echo "ERROR: build file not found: $FILE"
+if [ "$COUNT" -ne 1 ]; then
+  echo "ERROR: expected 1 build file, found $COUNT"
+  ls www/
   exit 1
 fi
 
