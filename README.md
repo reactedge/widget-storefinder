@@ -15,7 +15,7 @@ isolation discipline, and predictable behaviour.
 -   An embeddable Store Finder widget
 -   Displays store locations in list and map format
 -   Contract‑driven configuration via
-    `<script type="application/json" data-config>`
+    `<storefinder-widget data-contract="/cdn/store-1.json"></storefinder-widget>`
 -   Integration‑aware (Google Maps via runtime configuration)
 -   Delivered as a versioned IIFE JavaScript bundle
 -   Rendered in the Light DOM with scoped CSS
@@ -37,44 +37,11 @@ host application lifecycle.
 This widget focuses on safe, isolated delivery of location discovery
 behaviour.
 
-------------------------------------------------------------------------
-
-## Design Principles
-
-All ReactEdge widgets share the same architectural discipline:
-
-Isolation first\
-No global JavaScript leakage.
-
-Reversible by design\
-Removing the script and custom element leaves no trace.
-
-Non‑hostile to the host\
-No global resets. 
-
-Contract‑driven\
-TypeScript interfaces mirror the JSON configuration exactly.
-
-Resolved configuration layer\
-External contract is parsed and resolved into a strict internal
-configuration model before rendering.
-
-Integration‑aware\
-Runtime integrations are declared separately and validated during
-bootstrap.
-
-Tested in isolation\
-Mounting and contract fidelity validated via Playwright.
-
-------------------------------------------------------------------------
-
 ## Embedding Contract
 
 Example usage:
 
 ``` html
-<storefinder-widget>
-    <script type="application/json" data-config>
         {
             "data": {
                 "stores": [
@@ -88,9 +55,9 @@ Example usage:
                 "requires": ["googleMaps"]
             }
         }
-    </script>
-</storefinder-widget>
+```
 
+``` html
 <script type="application/json" id="reactedge-runtime">
 {
     "integrations": {
