@@ -1,19 +1,16 @@
 import {StoreFinder} from "./components/StoreListing.tsx";
-import {useWidgetConfig} from "./hooks/useWidgetConfig.ts";
-import {Spinner} from "./components/global/Spinner.tsx";
-import {ErrorState} from "./components/global/ErrorState.tsx";
 import {TranslationStateProvider} from "./state/Translation/TranslationStateProvider.tsx";
+import type {StoreFinderWidgetConfig} from "./domain/store.types.ts";
+import {readWidgetConfig} from "./StoreFinderConfig.ts";
 
 type Props = {
-    host: HTMLElement
+    rawConfig: StoreFinderWidgetConfig
 }
 
-export default function StoreFinderWidget({host}: Props) {
-    const {config, error, loading} = useWidgetConfig(host);
+export default function StoreFinderWidget({rawConfig}: Props) {
+    const config = readWidgetConfig(rawConfig);
 
     if (!config) return null;
-    if (error) return <ErrorState />
-    if (loading) return <Spinner />
 
     return (
         <TranslationStateProvider translations={config.translations}>

@@ -3,17 +3,14 @@ import type {
     ResolvedStoreFinderConfig, StoreFinderWidgetConfig
 } from "./domain/store.types.ts";
 import {WIDGET_ID} from "./mountWidget.tsx";
-import {loadContract} from "./widget-runtime/lib/contractLoader.ts";
 import {activity} from "./activity";
 
-export async function readWidgetConfig(
-    hostElement: HTMLElement
-): Promise<ResolvedStoreFinderConfig> {
-
-    const contract = await loadContract(hostElement);
+export function readWidgetConfig(
+    rawConfig: StoreFinderWidgetConfig
+): ResolvedStoreFinderConfig {
 
     const runtime = readIntegrationConfig();
-    const resolved = resolveStoreFinderConfig(contract, runtime);
+    const resolved = resolveStoreFinderConfig(rawConfig, runtime);
 
     activity('bootstrap', 'Config resolved', {
         data: resolved.data,
