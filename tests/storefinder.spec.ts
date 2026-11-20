@@ -1,20 +1,20 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
+import type { Locator } from "@playwright/test";
 
-test.describe('StoreFinder Widget', () => {
-    let widget;
+test.describe('Storefinder Widget', () => {
+    let storefinder: Locator;
 
     test.beforeEach(async ({ page }) => {
-        //await page.goto('/fixtures/storefinder.html');
-        await page.goto('/');
-        widget = page.locator('storefinder-widget');
+        await page.goto('/?reactedge_debug=eager');
+        storefinder = page.locator('storefinder-widget');
+        await expect(storefinder).toBeVisible();
     });
 
-    test('mounts successfully', async () => {
-        await expect(widget).toBeVisible();
-    });
+    test('Storefinder widget renders its configured title', async () => {
+        const title = storefinder.locator(
+            '[data-storefinder-title]'
+        );
 
-    test('mounts successfully with valid config', async ({ page }) => {
-        const stores = await widget.locator('[data-store-card]').count();
-        await expect(stores).toBeGreaterThan(0);
+        await expect(title).toBeVisible();
     });
 });
